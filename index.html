@@ -281,7 +281,10 @@ const SNAP={
  reminders(D){const t=tdy(),I=D.items||[],vis=I.filter(r=>!r.due||r.due<=t),wait=I.length-vis.length;if(!I.length)return null;
   return {h:vis.length?plural(vis.length,'reminder'):'Nothing to remember',s:wait?wait+' coming back later':'',l:vis.slice(0,5).map(r=>[r.t||'Untitled','']),hot:vis.length>0}},
  // Big Shiny: tasks due today at the property you're on
- cleaning(D){const Ps=D.props||[],P=Ps.find(p=>p.id==(D.set||{}).prop)||Ps[0];if(!P)return null;const g=shinyProg(D,P),low=(P.sup||[]).filter(s=>s.low!=null&&s.q!=null&&s.q<=s.low).length,tours=(P.tours||[]).filter(x=>x.d==tdy()).length;
+ cleaning(D){const Ps=D.props||[],P=Ps.find(p=>p.id==(D.set||{}).prop)||Ps[0];if(!P)return null;
+  // Clocked out or a day off (Big Shiny migration v9): just say so, and don't ask for a look
+  const o=D.off&&D.off.d==tdy()?D.off:null;if(o)return {h:o.k=='day'?'Day off':'Done for the day',s:'',l:[],hot:false};
+  const g=shinyProg(D,P),low=(P.sup||[]).filter(s=>s.low!=null&&s.q!=null&&s.q<=s.low).length,tours=(P.tours||[]).filter(x=>x.d==tdy()).length;
   const l=[['Done today',String(g.done)]];if(low)l.push(['Low supplies',String(low)]);if(tours)l.push(['Tours today',String(tours)]);
   return {h:g.due?plural(g.due,'task')+' due':'All caught up',s:P.n||'Untitled property',l,hot:g.due>0}},
  // Big Healthy: today's medication doses and water
