@@ -14,7 +14,7 @@ All six Big apps in one place, with a look at each one from Home. It holds [Big 
 - A dot marks apps that need a look today (reminders waiting, cleaning or a dose due, food to use up, a paycheck over budget), and the banner on Home counts them
 - Tap a card, or an app on the Apps tab, to open that app full screen inside the suite. **Suite** at the top (or your phone's Back button) takes you back, and the cards update with anything you changed.
 - Open any app on its own from the Apps tab, for example to install it to your home screen by itself
-- Choose which apps show on Home, and drag to change their order, under **Settings > Home**
+- Rearrange Home: hold a card for a moment until it lifts, then drag it to a new spot. You can also choose which apps show on Home and drag to change their order under **Settings > Home**
 - Light, dark and automatic themes, plus a Day/Night option that switches to dark at 6pm and back to light at 6am
 - Light haptic ticks when you save, delete, finish or toggle something, and buttons that visibly press in on every tap. Turn haptics off under **Settings > Haptics**.
 - Backups of the suite's own settings you can share, download and import
