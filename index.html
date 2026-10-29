@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Big Juicy</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#fff7f0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a130d" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Big Juicy"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Theme ===== */
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light;--bg:#fff7f0;--card:#fff;--fld:#fff0e2;--tx:#2b1c10;--mu:#8a6c58;--ac:#17a65a;--bd:#f5e0cf;--neg:#e8295b;--wn:#f08c00;--pc:#ff7a00;--pc2:#ffa53d;--brand:#ff7a00;--gl:10%;--tst:#2b1c10;--sh:0 1px 2px rgba(60,30,10,.05),0 10px 24px -14px rgba(60,30,10,.22);--fast:.16s;--fd:'Fredoka','Nunito',system-ui,sans-serif;--bounce:cubic-bezier(.34,1.56,.64,1)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#1a130d;--card:#261c14;--fld:#33261b;--tx:#fdf2e8;--mu:#c2a690;--ac:#3ddc84;--bd:#3f3024;--neg:#ff5c85;--wn:#ffb020;--sh:0 10px 24px -16px rgba(0,0,0,.7);--gl:20%;--tst:#3f3024}
+:root[data-theme="dark"] .card{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),var(--sh)}
+
+/* ===== Base ===== */
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px);touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+body{margin:0;background:radial-gradient(900px 440px at 50% -140px,color-mix(in srgb,var(--pc) var(--gl),transparent),transparent 72%) no-repeat,var(--bg);color:var(--tx);font:500 15px/1.45 'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));overflow-x:clip;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}input,select,button,b{font-variant-numeric:tabular-nums}
+main{max-width:1100px;margin:0 auto;padding:12px}
+/* Clips the page while it slides sideways, so it can never widen the viewport (which made the fixed nav twitch on iOS) */
+.vclip{overflow:hidden;width:100%}
+.view{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;align-items:start;touch-action:pan-y}
+.view>.seg,.view>h2,.view>button,.view>p,.view>.tiles,.view>.wide,.view>.warn,.view>.pcb{grid-column:1/-1}
+.view>h2{margin:8px 2px 0}
+h2,h3{margin:0 0 10px;font-family:var(--fd);font-weight:600}h2{font-size:20px;letter-spacing:-.2px}h3{font-size:16px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+summary{cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}
+.mu{color:var(--mu);font-size:13px}.neg{color:var(--neg)}.pos{color:var(--ac)}
+.sec{display:block;font-size:12px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--mu);margin:2px 0 6px}
+.ic{display:inline-block;vertical-align:-2px}
+
+/* ===== Cards & rows ===== */
+.card,.tile{border-radius:22px;box-shadow:var(--sh)}
+.card{background:var(--card);border:1px solid var(--bd);padding:16px}
+.view>.card{background-image:linear-gradient(90deg,var(--pc),var(--pc2));background-size:100% 5px;background-repeat:no-repeat;background-origin:border-box;padding-top:19px}.card h2{color:var(--pc)}
+.row{display:flex;gap:8px;align-items:center;margin:2px 0;min-height:38px}.row>*{min-width:0}.row>.mu{flex:none}
+.ln{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0}.ln span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ln b{font-weight:600;white-space:nowrap}
+.tag{flex:none;font-size:10px;font-weight:800;letter-spacing:.4px;color:var(--pc);background:color-mix(in srgb,var(--pc) 13%,transparent);border-radius:99px;padding:3px 8px;text-transform:uppercase}
+.bar{height:8px;background:var(--fld);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pc),var(--pc2));transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.warn{border-color:var(--wn);background:color-mix(in srgb,var(--wn) 10%,var(--card))}.warn h3{color:var(--wn)}.warn .row button{padding:5px 10px;font-size:13px}
+
+/* ===== Inputs & buttons ===== */
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],textarea,select{width:100%;padding:9px 10px;border:1px solid transparent;border-radius:12px;background:var(--fld);color:var(--tx);font:inherit;transition:border-color var(--fast),background var(--fast)}
+.row input[type=text],.row input[type=number],.row input[type=date],.row select{padding:7px 8px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:color-mix(in srgb,var(--pc) 60%,transparent);background:var(--card);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 18%,transparent)}
+/* Checkboxes with a little pop when ticked */
+input[type=checkbox]{-webkit-appearance:none;appearance:none;width:24px;height:24px;flex:none;margin:0;border:2px solid color-mix(in srgb,var(--mu) 45%,transparent);border-radius:8px;background:var(--card);display:inline-grid;place-content:center;cursor:pointer;transition:background var(--fast),border-color var(--fast)}
+input[type=checkbox]::after{content:"";width:6px;height:11px;margin-top:-3px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) scale(0);transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
+input[type=checkbox]:checked{background:linear-gradient(135deg,var(--pc),var(--pc2));border-color:transparent}input[type=checkbox]:checked::after{transform:rotate(45deg) scale(1)}
+input[type=checkbox].pop{animation:pop .3s cubic-bezier(.34,1.56,.64,1)}@keyframes pop{40%{transform:scale(1.22)}}
+button{background:linear-gradient(135deg,var(--pc),var(--pc2));color:#fff;border:0;border-radius:14px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pc) 70%,transparent);transition:transform .25s var(--bounce),filter .1s,background var(--fast)}
+button.g,button.x,nav button,.seg button,.gear,#toast button,.warn .row button{box-shadow:none}
+button:is(:active,.prs){transform:scale(.93);filter:brightness(.95);transition-duration:.08s}
+button:disabled{opacity:.4}
+button.g{background:none;color:var(--mu);padding:8px 10px;font-weight:600}button.x{background:none;color:var(--neg);padding:8px 8px;font-weight:600}
+button.bd{border:1px solid var(--bd);color:var(--tx)}button.x.bd{color:var(--neg)}
+.seg{display:flex;gap:6px}.seg button{flex:1;background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.seg.qm button{border-radius:999px;padding:9px 6px}.seg.qm button.on{background:linear-gradient(135deg,var(--pc),var(--pc2));border-color:transparent;color:#fff;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pc) 70%,transparent)}
+
+/* ===== Header & bottom nav ===== */
+.top{display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);color:var(--tx);border-bottom:1px solid var(--bd);padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;margin-top:calc(-1 * env(safe-area-inset-top,0px));font:600 20px/1.2 var(--fd);letter-spacing:-.2px;text-align:center}
+.top .tt{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 44px;white-space:nowrap}.top .logo{flex:none;animation:spin 18s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.jz{background:linear-gradient(90deg,#ffa53d,#ff7a00 55%,#ff4d4d);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+.gear{position:absolute;right:10px;bottom:7px;background:none;color:var(--mu);width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:12px}.gear.on{color:var(--brand);background:color-mix(in srgb,var(--brand) 13%,transparent)}
+nav{position:fixed;z-index:6;left:0;right:0;bottom:0;display:flex;align-items:center;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);border-top:1px solid var(--bd);padding:5px 6px calc(5px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1 1 0;min-width:0;background:none;color:var(--mu);border-radius:16px;padding:7px 0 5px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;position:relative;z-index:1;transition:color .25s}
+nav button>span{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+nav button.on{color:var(--tc)}nav button:is(:active,.prs){transform:none;filter:none}
+.ni{flex:none;width:24px;height:24px}
+/* One small highlight pill that sits behind the active tab's icon only and glides between tabs; the buttons themselves never move */
+.hl{position:absolute;left:0;top:0;z-index:0;pointer-events:none;border-radius:16px;width:var(--hw,0);height:var(--hh,0);transform:translate3d(var(--hx,0),var(--hy,0),0);background:color-mix(in srgb,var(--hc,#ff7a00) 14%,transparent);opacity:var(--ho,0);transition:transform .34s var(--bounce),width .34s var(--bounce),opacity .2s,background .25s}
+nav.drag .hl{transition:none}
+/* Neighbouring tab shown beside the current one while swiping */
+#peek{position:fixed;left:0;right:0;bottom:0;z-index:4;overflow:hidden;pointer-events:none;background:var(--bg);will-change:transform}
+#peek>.view{max-width:1100px;margin:0 auto;padding:12px}
+
+/* ===== Toast & popup ===== */
+#toast{position:fixed;z-index:30;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);background:var(--tst);color:#fff;border-radius:18px;padding:10px 10px 10px 16px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .18s}
+#toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}#toast span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#toast button{background:none;color:#ffb020;padding:6px 10px;font-weight:800}
+#dlg{position:fixed;inset:0;z-index:35;display:grid;place-items:end center;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));background:rgba(22,12,4,.45);animation:dfade .18s ease-out}
+#dlg[hidden]{display:none}
+.dbox{width:100%;max-width:420px;background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:dup .28s cubic-bezier(.16,1,.3,1)}
+.dbox h3{margin:0 0 6px;font:600 20px/1.2 var(--fd);color:var(--tx)}.dbox p{margin:0 0 16px;font-size:14px}
+.dbtns{display:flex;flex-direction:column;gap:8px}.dbtns button{width:100%;padding:12px 16px}
+@media(min-width:600px){#dlg{place-items:center}}
+@keyframes dfade{from{opacity:0}}@keyframes dup{from{transform:translateY(28px);opacity:0}}
+
+/* ===== Greeting & hero ===== */
+.view>.hello{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 4px -2px}
+.hello b{font:600 25px/1.2 var(--fd)}.hello span{flex:none;font-size:13px;font-weight:800;color:var(--pc);background:color-mix(in srgb,var(--pc) 13%,transparent);padding:5px 12px;border-radius:99px}
+.pcb{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--pc),var(--pc2));color:#fff;border-radius:26px;padding:18px;box-shadow:0 12px 24px -12px color-mix(in srgb,var(--pc) 70%,transparent)}
+.pcb:before,.pcb:after{content:"";position:absolute;border-radius:50%;background:#ffffff1c;pointer-events:none}.pcb:before{left:-50px;bottom:-80px;width:180px;height:180px}.pcb:after{right:-40px;top:-60px;width:140px;height:140px;background:#ffffff14}.pcb>*{position:relative;z-index:1}
+.pcb b{display:block;font:600 34px/1.1 var(--fd)}.pcb span{font-size:13px;opacity:.9}
+
+/* ===== Drag to reorder ===== */
+.dh{flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:34px;margin-left:-6px;color:var(--mu);opacity:.45;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}.dh:is(:active,.prs){cursor:grabbing}
+.dragging{position:relative;z-index:20;background:var(--card);border-radius:10px;box-shadow:0 10px 24px rgba(16,24,40,.18),0 0 0 1px var(--bd);transition:box-shadow .15s}.dragging .dh{opacity:1;color:var(--pc)}
+body.dragmode{user-select:none;-webkit-user-select:none;cursor:grabbing}
+
+/* ===== App cards on Home ===== */
+/* Each card is tinted with its own app's colors (set inline as --pc / --pc2) */
+.acard{cursor:pointer;transition:transform .25s var(--bounce),border-color var(--fast)}
+.acard:is(:active,.prs){transform:scale(.97);transition-duration:.08s}
+.acard:focus-visible{outline:none;border-color:var(--pc);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 25%,transparent)}
+.acard h3{justify-content:flex-start;margin-bottom:8px}
+.an{display:flex;align-items:center;gap:8px;min-width:0;flex:1}.an>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.an em{font-style:normal;font-weight:500;color:var(--mu)}
+.acard .big{display:block;font:600 24px/1.2 var(--fd);margin:0 0 2px;overflow-wrap:anywhere}
+.acard .lns{margin-top:8px;border-top:1px solid var(--bd);padding-top:6px}
+.dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--pc);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 22%,transparent)}
+.chev{flex:none;color:var(--mu)}
+.src{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:700;color:var(--mu)}
+
+/* ===== App list ===== */
+.arow{display:flex;align-items:center;gap:4px;padding:4px 0;border-top:1px solid var(--bd)}.arow:first-of-type{border-top:0}
+.aopen{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:none;color:var(--tx);box-shadow:none;padding:6px 4px;text-align:left;font-weight:600;border-radius:14px}
+.aopen:is(:active,.prs){transform:scale(.97)}
+.aopen img{flex:none;width:52px;height:52px;border-radius:14px;box-shadow:0 4px 10px -6px rgba(0,0,0,.4)}
+.aopen>span{min-width:0}.aopen b{display:block;font:600 17px/1.2 var(--fd)}.aopen b em{font-style:normal;font-weight:500;color:var(--mu)}
+.aopen small{display:block;font-size:13px;font-weight:600;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ext{flex:none;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;color:var(--mu)}
+.ext:is(:active,.prs){background:var(--fld)}
+.hrow .an{font-weight:600}
+
+/* ===== App viewer ===== */
+/* An app opened inside the suite fills the screen; the bar on top takes you back */
+#vw{position:fixed;inset:0;z-index:32;display:flex;flex-direction:column;background:var(--bg);padding-bottom:env(safe-area-inset-bottom,0px);animation:vup .3s cubic-bezier(.16,1,.3,1)}
+#vw[hidden]{display:none}
+.vbar{flex:none;position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(5px + env(safe-area-inset-top,0px)) 6px 5px;background:var(--card);border-bottom:1px solid var(--bd)}
+.vbar .vback{display:flex;align-items:center;gap:2px;color:var(--brand);font-weight:800;padding:8px 10px 8px 4px;z-index:1}
+.vbar .vt{position:absolute;left:0;right:0;bottom:5px;height:40px;display:flex;align-items:center;justify-content:center;gap:6px;font:600 16px/1 var(--fd);pointer-events:none}
+.vbar .ext{z-index:1}
+#vw iframe{flex:1;display:block;width:100%;border:0;background:var(--bg)}
+body.vopen{overflow:hidden}
+@keyframes vup{from{transform:translateY(32px);opacity:0}}
+
+@media(prefers-reduced-motion:reduce){*,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+</style></head><body><header class="top"><span class="tt"><svg class="logo" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#f06a00"/><circle cx="16" cy="16" r="12.2" fill="#ffe8d1"/><circle cx="16" cy="16" r="10.6" fill="#ff9a3d"/><path d="M16 6v20M6 16h20M8.6 8.6l14.8 14.8M23.4 8.6 8.6 23.4" stroke="#ffe8d1" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="#ffe8d1"/></svg><span><span class="jz">Big Juicy</span> Suite</span></span><button id="gear" class="gear" aria-label="Settings" data-a="gear"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></header><div class="vclip"><main id="app" class="view"></main></div><nav id="nav"></nav><div id="vw" hidden></div><div id="toast" role="status" aria-live="polite"></div><div id="dlg" hidden></div>
+<script src="feedback.js"></script>
+<script src="sync.js"></script>
+<script>
+// =====================================================================
+// 1. CONSTANTS
+// =====================================================================
+const LS='juicy-v1';                      // localStorage key (don't change once released: it holds your settings)
+const APP_NAME='Big Juicy Suite';
+const TC={home:['#ff7a00','#ffa53d'],apps:['#f06a00','#ff5a3d'],more:['#ff7a00','#ffa53d']}; // tab colors
+// The Big apps the suite holds. Each lives next to this one on GitHub Pages (../<id>/), and its id is also its sync id.
+// key: where that app keeps its data in this browser. The suite only ever reads it, never writes it.
+// c: logo colors [outer ring, rind and spokes, flesh]; g: card stripe gradient
+const APPS=[
+ {id:'budget',s:'Big Minty',w:'Finances',d:'Paycheck-by-paycheck budgeting',key:'budget-v1',c:['#00a83a','#dcf8e5','#2fd36b'],g:['#00b844','#2fd36b']},
+ {id:'cooking',s:'Big Saucy',w:'Recipes',d:'Recipes, meal plans and a shopping list',key:'saucy-v1',c:['#e8333f','#ffe0dc','#ff6b6b'],g:['#ee2e3b','#ff6b6b']},
+ {id:'diet',s:'Big Skinny',w:'Health',d:'Calories, exercise and weigh-ins',key:'calorie-v1',c:['#ff8a1f','#fff1c2','#ffc533'],g:['#ffb000','#ff8a1f']},
+ {id:'reminders',s:'Big Tidy',w:'Reminders',d:'Five things to remember, and no more',key:'tidy-v1',old:'nudgy-v1',c:['#7b2ff0','#efe4ff','#a66bff'],g:['#8b3ff0','#a66bff']},
+ {id:'cleaning',s:'Big Shiny',w:'Rounds',d:'Cleaning rounds, checklists and supplies',key:'cleaning-v1',c:['#1f7ae0','#dcefff','#4aa8ff'],g:['#2f8fff','#4aa8ff']},
+ {id:'habits',s:'Big Healthy',w:'Habits',d:'Stretches, timers, water and meds',key:'habits-v1',c:['#f0378f','#ffe0ef','#ff7ab8'],g:['#ff4fa3','#ff7ab8']},
+];
+const appOf=id=>APPS.find(a=>a.id==id);
+const urlOf=a=>'../'+a.id+'/';
+
+// =====================================================================
+// 2. GENERAL UTILITIES
+// =====================================================================
+const num=v=>+v||0;
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const uid=p=>p+Math.random().toString(36).slice(2,9);
+const plural=(n,w)=>n+' '+w+(n==1?'':'s');
+const $$=n=>(n<0?'-':'')+Math.abs(n).toLocaleString(undefined,{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt=n=>Math.round(num(n)).toLocaleString();
+const DAY_MS=864e5;
+
+// =====================================================================
+// 3. DATES  (all dates are local 'YYYY-MM-DD' strings)
+// =====================================================================
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); // Date -> local YYYY-MM-DD
+const tdy=()=>iso(new Date());
+const fd=d=>d?new Date(d+'T00:00').toLocaleDateString(undefined,{month:'short',day:'2-digit'}):'';  // "Oct 09"
+const longDate=d=>new Date(d+'T00:00').toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'});
+const addDays=(d,n)=>{const x=new Date(d+'T00:00');x.setDate(x.getDate()+n);return iso(x)};
+const addMonths=(d,n)=>{const x=new Date(d+'T00:00'),day=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+n);x.setDate(Math.min(day,new Date(x.getFullYear(),x.getMonth()+1,0).getDate()));return iso(x)};
+const dayDiff=d=>Math.round((new Date(d+'T00:00')-new Date(tdy()+'T00:00'))/DAY_MS);   // days from today to d
+const dOf=ts=>iso(new Date(ts));
+const tm=t=>!t?'':new Date('2000-01-01T'+t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});   // '08:00' -> '8:00 AM'
+const when=t=>{const d=new Date(t),n=new Date(),h=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});return d.toDateString()==n.toDateString()?'today at '+h:d.toLocaleDateString([],{month:'short',day:'numeric'})+' at '+h};
+
+// =====================================================================
+// 4. STATE: seed data, schema migrations, load/save
+// =====================================================================
+let S,T='home';                           // data, current tab
+let O={},DLG=null,VW=null;                // UI-only: open <details>, open popup, app open in the viewer (its id)
+
+// A brand-new install shows every app on Home, in the suite's order
+function seed(){return {set:{theme:'system',welcome:1,since:Date.now()},apps:APPS.map(a=>({id:a.id,on:true}))}}
+// What counts as this app's data (used by backup import and sync)
+const VALID=j=>!!j&&Array.isArray(j.apps);
+
+// Schema migrations. S.v records how many have run. To change the data shape later,
+// ADD a new function to the end of this list; never edit an old one.
+const MIGRATIONS=[
+ // v1: first version. apps: [{id, on}] in the order they show on Home; on = shown there
+ S=>{S.set=S.set||{};if(S.set.theme==null)S.set.theme='system';if(!S.set.since)S.set.since=Date.now();if(!Array.isArray(S.apps))S.apps=[]},
+];
+// Keep the app list matching APPS: a Big app added to the suite later shows up at the end, one removed drops out
+function fillApps(){S.apps=S.apps.filter((x,i,a)=>x&&appOf(x.id)&&a.findIndex(y=>y&&y.id==x.id)==i);APPS.forEach(a=>{if(!S.apps.some(x=>x.id==a.id))S.apps.push({id:a.id,on:true})})}
+function migrate(){S.set=S.set||{};for(let v=S.v||0;v<MIGRATIONS.length;v++)MIGRATIONS[v](S);S.v=MIGRATIONS.length;fillApps()}
+function load(){try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}if(!S)S=seed();migrate()}
+// Saving: write to storage a moment later (and immediately when the app is hidden or closed)
+let SVT=0,SVFAIL=0;
+// Saving can fail (storage full, private browsing, blocked site data). Say so once instead of failing silently.
+function flush(){clearTimeout(SVT);SVT=0;try{const t=JSON.stringify(S);localStorage.setItem(LS,t);SVFAIL=0;window.CloudSync&&CloudSync.saved(t)}catch(e){if(!SVFAIL){SVFAIL=1;setTimeout(()=>toast('Couldn’t save on this device. Download a backup in Settings.'),0)}}}
+const save=()=>{clearTimeout(SVT);SVT=setTimeout(flush,400)};
+addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
+
+// Path-based edits: 'apps.3.on' etc.
+const get=p=>p.split('.').reduce((o,k)=>o[k],S);
+function up(p,v,t){const k=p.split('.'),l=k.pop(),o=k.reduce((o,x)=>o[x],S);o[l]=t=='n'?(parseFloat(v)||0):v;save();R()}
+// Undo toast
+let TT=0,UNDO=null,UGRP='',UCNT=0;
+// grp: consecutive toasts in the same group (e.g. several quick deletes) share one Undo that reverts all of them, newest first
+function toast(msg,undo,grp){window.Feedback&&Feedback.fromToast(msg);const el=document.getElementById('toast');
+ if(undo&&grp&&UNDO&&UGRP==grp){const prev=UNDO,cur=undo;undo=()=>{cur();prev()};UCNT++;msg=grp=='del'?`Deleted ${UCNT} items`:msg}else UCNT=1;
+ UGRP=undo?grp||'':'';el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-a="undo">Undo</button>':''}`;UNDO=undo||null;el.classList.add('on');clearTimeout(TT);TT=setTimeout(()=>{el.classList.remove('on');UNDO=null;UGRP=''},5000)}
+// The suite holds only a few settings, so there's no weekly backup reminder; Settings still has Backup & restore
+const markBk=()=>{S.set.lastBk=Date.now();save();R()};
+
+// =====================================================================
+// 5. CALCULATIONS (pure reads)
+// =====================================================================
+// ---- Reading the other apps' data ----
+// Two places to look: what each app saved in this browser, and (when you're signed in to sync) the copy it last
+// synced. On iPhone a home-screen app keeps its own storage, so the synced copy is often the only one the suite can see.
+// Whichever is newer wins. Nothing here ever writes to another app's data.
+let CLOUD={},CLT=0,CLBUSY=0;              // synced copies {id: {at, d}}, when they were last fetched
+const PARSED=new Map();                   // key -> [text, parsed], so unchanged data isn't parsed on every redraw
+function readKey(k){let t=null;try{t=localStorage.getItem(k)}catch(e){}if(t==null)return null;const c=PARSED.get(k);if(c&&c[0]===t)return c[1];
+ let v=null;try{v=JSON.parse(t)}catch(e){}PARSED.set(k,[t,v]);return v}
+function localOf(a){const d=readKey(a.key)??(a.old?readKey(a.old):null);if(!d||typeof d!='object')return null;const m=readKey(a.key+':cloud')||{};return {d,at:num(m.at),synced:!!m.uid}}
+// The copy to show for an app: {d, cloud: true when it came from sync, at}
+function dataOf(a){const L=localOf(a),C=CLOUD[a.id];
+ if(C&&(!L||(L.synced&&C.at>L.at)))return {d:C.d,cloud:true,at:C.at};
+ return L?{d:L.d,cloud:false,at:L.at}:null}
+const unzip=async r=>r.gz?new Response(new Blob([r.gz.toUint8Array()]).stream().pipeThrough(new DecompressionStream('gzip'))).text():r.json;
+// Fetch every app's synced copy (at most once a minute unless forced)
+async function fetchCloud(force){if(!window.CloudSync||!CloudSync.signedIn()||CLBUSY)return;if(!force&&Date.now()-CLT<60e3)return;CLBUSY=1;CLT=Date.now();
+ await Promise.all(APPS.map(async a=>{try{const r=await CloudSync.mine.get('apps/'+a.id);if(!r){delete CLOUD[a.id];return}CLOUD[a.id]={at:num(r.at),d:JSON.parse(await unzip(r))}}catch(e){}}));
+ CLBUSY=0;R()}
+
+// ---- What each app's card says. Each reads that app's saved data the way the app itself does. ----
+// Returns {h: headline, s: line under it, l: [[label, value]], hot: needs a look today} or null when there's nothing yet.
+const SNAP={
+ // Big Minty: the paycheck you're in now (the latest one dated today or earlier)
+ budget(D){const t=tdy(),C=D.checks||[];if(!C.length)return null;const k=Math.max(0,C.findLastIndex(c=>c.date<=t)),c=C[k],E=C[k+1]?C[k+1].date:addDays(c.date,14),it=c.items||[];
+  const exp=sum(it.filter(i=>['Needs','Wants','Savings'].includes(i.g)),i=>num(i.a)),left=num(c.net)+sum(c.extraTx||[],x=>num(x.a))+num(c.prev)+num(c.adj)-exp;
+  let pay=sum(it.filter(i=>!i.cat&&!i.loan&&!i.paid),i=>num(i.a));
+  (D.loans||[]).forEach(l=>(l.pays||[]).forEach(p=>{if(!p.paid&&p.d>=c.date&&p.d<E)pay+=p.a==null?num(l.amt):num(p.a)}));
+  let nx=(C.find(x=>x.date>t)||{}).date;if(!nx){nx=addDays(C[C.length-1].date,14);let g=0;while(nx<=t&&g++<100)nx=addDays(nx,14)}
+  if(!num(c.net)&&!exp)return null;
+  return {h:$$(left)+(left<0?' over':' left'),s:'Paycheck '+(k+1),l:[['Still to pay',$$(pay)],['Next payday',fd(nx)]],hot:left<-.005}},
+ // Big Saucy: today's meals from the plan, and kitchen items that need using up soon
+ cooking(D){const t=tdy(),R=D.recipes||[],by=id=>R.find(r=>r.id==id),P=D.plan||[];
+  const meals=P.filter(e=>e.d==t&&by(e.rid)&&(e.k=='cook'||P.some(b=>b.id==e.src)));
+  const low=(D.pantry||[]).filter(p=>p.days!=null&&p.added&&num(p.days)+dayDiff(p.added)<=3);
+  const l=meals.slice(0,3).map(e=>[e.k=='cook'?'Cook':'Leftovers',by(e.rid).title||'Untitled']);
+  if(low.length)l.push(['Use it up',low.slice(0,3).map(p=>p.name).join(', ')+(low.length>3?' +'+(low.length-3):'')]);
+  return {h:meals.length?plural(meals.length,'meal')+' planned today':'Nothing planned today',s:plural(R.length,'recipe'),l,hot:low.length>0}},
+ // Big Skinny: calories left today against your daily target
+ diet(D){const t=tdy(),p=D.prof||{},day=(D.days||{})[t]||{},food=sum(['b','l','d','s'],k=>sum(day[k]||[],x=>num(x.cal))),bn=sum(day.x||[],x=>num(x.cal)),tt=dietTarget(p);
+  if(!tt&&!food)return null;
+  if(!tt)return {h:fmt(food)+' cal eaten',s:'No daily target yet',l:[],hot:false};
+  const left=tt+bn-food;return {h:fmt(Math.abs(left))+(left>=0?' cal left':' cal over'),s:'Today',l:[['Eaten',fmt(food)],['Exercise','+'+fmt(bn)],['Target',fmt(tt)]],hot:false}},
+ // Big Tidy: the reminders showing now (recurring ones that are done stay hidden until they come back)
+ reminders(D){const t=tdy(),I=D.items||[],vis=I.filter(r=>!r.due||r.due<=t),wait=I.length-vis.length;if(!I.length)return null;
+  return {h:vis.length?plural(vis.length,'reminder'):'Nothing to remember',s:wait?wait+' coming back later':'',l:vis.slice(0,5).map(r=>[r.t||'Untitled','']),hot:vis.length>0}},
+ // Big Shiny: tasks due today at the property you're on
+ cleaning(D){const Ps=D.props||[],P=Ps.find(p=>p.id==(D.set||{}).prop)||Ps[0];if(!P)return null;const g=shinyProg(D,P),low=(P.sup||[]).filter(s=>s.low!=null&&s.q!=null&&s.q<=s.low).length,tours=(P.tours||[]).filter(x=>x.d==tdy()).length;
+  const l=[['Done today',String(g.done)]];if(low)l.push(['Low supplies',String(low)]);if(tours)l.push(['Tours today',String(tours)]);
+  return {h:g.due?plural(g.due,'task')+' due':'All caught up',s:P.n||'Untitled property',l,hot:g.due>0}},
+ // Big Healthy: today's medication doses and water
+ habits(D){const t=tdy(),tk=(D.taken||{})[t]||{},n=new Date(),hm=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  const ds=(D.meds||[]).flatMap(m=>[...new Set((m.times||[]).filter(Boolean))].map(x=>({m,t:x,at:tk[m.id+'@'+x],due:x<=hm}))).sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:0);
+  const w=num((D.water||{})[t]),goal=num((D.set||{}).water)||8,dn=ds.filter(x=>x.at).length,todo=ds.filter(x=>!x.at),rt=(D.log||[]).filter(x=>x.d==t).length;
+  const l=todo.slice(0,3).map(x=>[x.m.n+(x.m.dose?' · '+x.m.dose:''),(x.due?'Due ':'')+tm(x.t)]);l.push(['Water',w+' of '+goal+' glasses']);if(rt)l.push(['Routines today',String(rt)]);
+  return {h:ds.length?dn+' of '+ds.length+' doses taken':w+' of '+goal+' glasses',s:ds.length?'Today':'Water today',l:ds.length?l:l.slice(1),hot:todo.some(x=>x.due)}},
+};
+// Big Skinny's daily target (the same sum the app does): Mifflin-St Jeor resting burn x activity, less 500 cal a day
+// per pound a week when losing, never under 1,200 (women) or 1,500 (men)
+function dietTarget(p){if(!(num(p.age)>0&&num(p.ft)>0&&num(p.lbs)>0&&num(p.goal)>0))return 0;const r10=n=>Math.round(n/10)*10;
+ const kg=num(p.lbs)*.45359237,cm=(num(p.ft)*12+num(p.inch))*2.54,tdee=(10*kg+6.25*cm-5*num(p.age)+(p.sex=='m'?5:-161))*num(p.act||1.2),fl=p.sex=='m'?1500:1200;
+ if(num(p.lbs)-num(p.goal)<=.5||tdee<=fl)return r10(tdee);return r10(Math.max(tdee-num(p.pace)*500,fl))}
+// Big Shiny's progress (the same rules the app uses): each task is due again a day, week or month after it was last done;
+// as-needed tasks never count; an area marked clean today stops whatever was still due in it
+function shinyProg(D,P){const LI=new Map(),t=tdy();(D.log||[]).forEach(e=>{const k=e.a+'|'+e.t,p=LI.get(k);if(!p||e.at>p.at)LI.set(k,e)});
+ const A=P.areas||[],kids=a=>A.filter(x=>x.par==a.id),leaf=a=>{const k=kids(a);return k.length?k:[a]};
+ const tasks=a=>kids(a).length?[]:(a.useStd?(P.std||[]).filter(x=>!(a.skip||[]).includes(x.id)).map(x=>({id:x.id,f:(a.sf||{})[x.id]||'daily'})):[]).concat(a.ex||[]);
+ const next=(f,l)=>{const d=dOf(l.at);return f=='daily'?addDays(d,1):f=='weekly'?addDays(d,7):f=='monthly'?addMonths(d,1):null};
+ const fin=a=>[a.id,a.par].map(id=>id&&LI.get(id+'|fin')).filter(e=>e&&dOf(e.at)==t).sort((x,y)=>y.at-x.at)[0];
+ let due=0,done=0;new Set(A.filter(a=>!a.par).flatMap(leaf)).forEach(a=>tasks(a).forEach(k=>{if(k.f=='need')return;const l=LI.get(a.id+'|'+k.id);let d=!l||t>=next(k.f,l);
+  const f=d&&fin(a);if(f&&(!l||f.at>l.at))d=false;if(d)due++;else if(l&&dOf(l.at)==t)done++}));
+ return {due,done}}
+function snapOf(a){const x=dataOf(a);if(!x)return {x:null,s:null};try{return {x,s:SNAP[a.id](x.d)}}catch(e){return {x,s:null,err:1}}}
+
+// =====================================================================
+// 6. SHARED UI PIECES
+// =====================================================================
+const C=p=>`<input type="checkbox" ${get(p)?'checked':''} data-p="${p}" data-t="b">`;
+const ICX='<svg class="ic" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+const CHR='<svg class="chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHL='<svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const EXT='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+const CLD='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.5-9 6 6 0 0 1 11.5 1.5A3.75 3.75 0 0 1 17.5 18z"/></svg>';
+// The three-tone citrus logo in an app's own colors
+const logo=(a,z=22)=>{const [o,l,m]=a.c;return `<svg viewBox="0 0 32 32" width="${z}" height="${z}" aria-hidden="true" style="flex:none"><circle cx="16" cy="16" r="15" fill="${o}"/><circle cx="16" cy="16" r="12.2" fill="${l}"/><circle cx="16" cy="16" r="10.6" fill="${m}"/><path d="M16 6v20M6 16h20M8.6 8.6l14.8 14.8M23.4 8.6 8.6 23.4" stroke="${l}" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="${l}"/></svg>`};
+const DH=`<span class="dh" title="Drag to reorder"><svg viewBox="0 0 10 16" width="10" height="16" aria-hidden="true"><g fill="currentColor"><circle cx="2.5" cy="3" r="1.5"/><circle cx="7.5" cy="3" r="1.5"/><circle cx="2.5" cy="8" r="1.5"/><circle cx="7.5" cy="8" r="1.5"/><circle cx="2.5" cy="13" r="1.5"/><circle cx="7.5" cy="13" r="1.5"/></g></svg></span>`;
+const lines=a=>a.map(([n,v])=>`<div class="ln"><span>${esc(n)}</span><b>${esc(v)}</b></div>`).join('');
+
+// ---- Popup with a choice of buttons. btns: [label, button class, callback or null to just close] ----
+function openDlg(t,msg,btns){DLG={b:btns.map(x=>x[2])};const el=document.getElementById('dlg');
+ el.innerHTML=`<div class="dbox" role="alertdialog" aria-modal="true" aria-labelledby="dlgt" aria-describedby="dlgm"><h3 id="dlgt">${esc(t)}</h3><p class="mu" id="dlgm">${esc(msg)}</p><div class="dbtns">${btns.map((x,i)=>`<button class="${x[1]}" data-a="dlgBtn" data-i="${i}">${esc(x[0])}</button>`).join('')}</div></div>`;
+ el.hidden=false;const f=el.querySelector('button');f&&f.focus();navSync()}
+function closeDlg(){if(!DLG)return;DLG=null;const el=document.getElementById('dlg');el.hidden=true;el.innerHTML='';navSync()}
+document.addEventListener('keydown',e=>{if(e.key=='Escape'){if(DLG)closeDlg();else if(VW)closeApp()}});
+
+// ---- The app viewer: opens one of the Big apps full screen inside the suite ----
+// The app runs in a frame from the same site, so it reads and saves its own data exactly as it does on its own.
+// Closing removes the frame (which also drops any Back steps the app added), then the cards refresh.
+function openApp(id){const a=appOf(id);if(!a)return;VW=id;const el=document.getElementById('vw');
+ el.style.setProperty('--brand',a.g[0]);
+ el.innerHTML=`<div class="vbar"><button class="g vback" data-a="closeApp">${CHL}<span>Suite</span></button><span class="vt">${logo(a,20)}<span>${esc(a.s)}</span></span><a class="ext" href="${urlOf(a)}" target="_blank" rel="noopener" aria-label="Open ${esc(a.s)} on its own">${EXT}</a></div><iframe src="${urlOf(a)}" title="${esc(a.s+' '+a.w)}" allow="screen-wake-lock; clipboard-write; web-share"></iframe>`;
+ el.hidden=false;document.body.classList.add('vopen');window.Feedback&&Feedback.hap('tick');navSync()}
+function closeApp(){if(!VW)return;VW=null;const el=document.getElementById('vw');el.hidden=true;el.innerHTML='';document.body.classList.remove('vopen');navSync();R();
+ setTimeout(()=>{R();fetchCloud(true)},700)}   // the app saves a moment after a change, and its sync uploads a moment after that
+
+// =====================================================================
+// 7. VIEWS (one function per tab; each returns HTML for #app)
+// =====================================================================
+function hello(){const h=new Date().getHours(),g=h<5?'Up late':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+ return `<div class="hello"><b>${g}</b><span>${new Date().toLocaleDateString(undefined,{weekday:'long'})}</span></div>`}
+// First-run card: shown until dismissed (or replaced by an imported backup)
+const welcome=()=>`<div class="card wide"><h3><span>Welcome to Big Juicy</span><button class="g" data-a="welcomeOff" aria-label="Dismiss">${ICX}</button></h3><p class="mu" style="margin:0 0 12px">All six Big apps in one place. Home shows what’s going on in each one; tap a card to open that app right here. Using the apps on their own on iPhone? Sign in to sync, here and in each app, so Home can see them.</p><div class="row"><button data-a="gear">Sign in to sync</button><button class="g bd" data-a="welcomeOff">Got it</button></div></div>`;
+
+function appCard(a){const {x,s,err}=snapOf(a);
+ return `<div class="card acard" role="button" tabindex="0" aria-label="Open ${esc(a.s+' '+a.w)}" data-a="openApp" data-id="${a.id}" style="--pc:${a.g[0]};--pc2:${a.g[1]}">
+ <h3><span class="an">${logo(a)}<span>${esc(a.s)} <em>${esc(a.w)}</em></span></span>${s&&s.hot?'<i class="dot" title="Needs a look"></i>':''}${CHR}</h3>
+ ${s?`<b class="big">${esc(s.h)}</b>${s.s?`<div class="mu">${esc(s.s)}</div>`:''}${s.l.length?`<div class="lns">${lines(s.l)}</div>`:''}`:`<p class="mu" style="margin:0">${err?'Open it to see what’s new.':'Nothing here yet. Tap to get started.'}</p>`}
+ ${x&&x.cloud?`<div class="src">${CLD}<span>From your synced copy${x.at?', '+esc(when(x.at)):''}</span></div>`:''}</div>`}
+
+function vHome(){const on=S.apps.filter(x=>x.on).map(x=>appOf(x.id)),hot=on.filter(a=>{const s=snapOf(a).s;return s&&s.hot}).length;
+ return hello()+(S.set.welcome?welcome():'')+
+ `<div class="pcb"><span>${longDate(tdy())}</span><b>${hot?plural(hot,'app')+(hot==1?' needs':' need')+' a look':'All quiet'}</b></div>`+
+ (on.map(appCard).join('')||`<div class="card wide"><h2>Nothing on Home</h2><p class="mu" style="margin:0 0 12px">Every app is hidden from Home. Choose which ones to show in Settings.</p><button data-a="gear">Open Settings</button></div>`)}
+
+function vApps(){
+ return `<div class="card wide"><h2>Your apps</h2>${S.apps.map(x=>{const a=appOf(x.id);return `<div class="arow"><button class="aopen" data-a="openApp" data-id="${a.id}"><img src="${urlOf(a)}icon-192.png" alt="" width="52" height="52"><span><b>${esc(a.s)} <em>${esc(a.w)}</em></b><small>${esc(a.d)}</small></span></button><a class="ext" href="${urlOf(a)}" target="_blank" rel="noopener" aria-label="Open ${esc(a.s)} on its own">${EXT}</a></div>`}).join('')}</div>
+ <p class="mu" style="margin:0 4px">Tap an app to open it here. To install one on its own, open it on its own and add it to your home screen from there.</p>`}
+
+function vMore(){
+ return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg qm">${[['system','Auto'],['daynight','Day/Night'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div>${window.Feedback?Feedback.view('qm'):''}</div>
+ <div class="card"><h2>Home</h2><p class="mu" style="margin:0 0 6px">Choose which apps show on Home, and drag to change their order.</p>${S.apps.map((x,i)=>{const a=appOf(x.id);return `<div class="row hrow" data-dl="apps" data-di="${i}">${DH}${C('apps.'+i+'.on')}<span class="an">${logo(a)}<span>${esc(a.s)} <em>${esc(a.w)}</em></span></span></div>`}).join('')}</div>
+ ${window.CloudSync?CloudSync.view():''}
+ <div class="card"><h2>Backup & restore</h2><p class="mu">This backs up the suite’s own settings. Each app keeps its own data, so back those up from inside each app.</p>
+ <p class="mu" style="font-weight:700">${S.set.lastBk?'Last backup: '+longDate(iso(new Date(S.set.lastBk))):'No backup yet.'}</p>
+ <div class="row"><button data-a="share">Share backup</button><button data-a="export">Download backup</button></div><div class="row"><button data-a="pickFile">Import backup file</button><input type="file" id="bkf" accept=".json,application/json" style="display:none" data-a="importFile"></div>
+ <details style="margin-top:8px" ${O.bk?'open':''} data-o="bk"><summary class="mu">Advanced</summary><div class="row" style="margin-top:8px"><button class="x" data-a="reset">Erase all data</button></div></details></div>`}
+
+// =====================================================================
+// 8. ACTIONS (buttons/selects/checkboxes with data-a="name" call ACT.name(dataset, element))
+// =====================================================================
+function bkFile(){const n=new Date(),p=x=>String(x).padStart(2,'0'),d=iso(n),t=p(n.getHours())+'-'+p(n.getMinutes());return new File([JSON.stringify({app:LS,exported:n.toISOString(),exportedLocal:d+' '+t.replace('-',':'),data:S},null,1)],APP_NAME.toLowerCase().replace(/\s+/g,'-')+'-backup-'+d+'_'+t+'.json',{type:'application/json'})}
+function exportData(){const f=bkFile(),u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);markBk()}
+async function shareData(){const f=bkFile();try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:APP_NAME+' Backup'});markBk()}else{exportData();alert('Sharing files is not supported here, so the backup was downloaded instead.')}}catch(e){if(e&&e.name!=='AbortError')exportData()}}
+function importFile(inp){const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{let j=JSON.parse(r.result);if(j&&j.data&&j.app)j=j.data;if(!VALID(j))throw 0;if(!confirm('Replace the suite’s settings on this device with this backup? This can’t be undone.')){inp.value='';return}S=j;migrate();save();flush();R();toast('Backup restored')}catch(e){alert('That file is not valid backup data')}inp.value=''};r.onerror=()=>alert('Couldn’t read that file');r.readAsText(f)}
+const ACT={
+ // navigation
+ tab:d=>goTab(d.id), gear:()=>goTab(T=='more'?'home':'more'),
+ dlgBtn:d=>{const f=DLG&&DLG.b[+d.i];closeDlg();f&&f()},
+ openApp:d=>openApp(d.id), closeApp,
+ // settings
+ share:shareData, export:exportData, pickFile:()=>document.getElementById('bkf').click(),
+ importFile:(d,el)=>importFile(el),
+ reset:()=>openDlg('Erase all data?','The suite’s settings on this device are reset. Your apps’ own data isn’t touched. This can’t be undone.',[['Erase everything','x bd',()=>{S=seed();migrate();save();flush();T='home';R();toast('All data erased')}],['Cancel','g bd',null]]),
+ theme:d=>{S.set.theme=d.v;save();R()},
+ welcomeOff:()=>{delete S.set.welcome;save();R()},
+ undo:()=>{const f=UNDO;UNDO=null;clearTimeout(TT);document.getElementById('toast').classList.remove('on');f&&f()},
+};
+// Buttons, plus the app cards on Home (role="button")
+const tapTarget=e=>e.target.closest('button[data-a],[role="button"][data-a]');
+document.addEventListener('click',e=>{
+ if(DLG&&e.target.id=='dlg'){closeDlg();return}
+ const b=tapTarget(e);if(b){if(b.closest('summary'))e.preventDefault();ACT[b.dataset.a](b.dataset,b)}});
+document.addEventListener('keydown',e=>{if((e.key=='Enter'||e.key==' ')&&e.target.matches('[role="button"][data-a]')){e.preventDefault();ACT[e.target.dataset.a](e.target.dataset,e.target)}});
+document.addEventListener('change',e=>{const t=e.target,d=t.dataset;
+ if(d.p&&d.t)up(d.p,t.type=='checkbox'?t.checked:t.value,d.t);
+ else if(d.a&&t.tagName!='BUTTON')ACT[d.a](d,t);
+ if(t.type=='checkbox'&&t.checked&&t.isConnected){t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');setTimeout(()=>t.classList.remove('pop'),320)}});
+document.addEventListener('toggle',e=>{const k=e.target.dataset&&e.target.dataset.o;if(k!=null)O[k]=e.target.open},true); // toggle doesn't bubble, so capture
+// Another app saved (in the viewer, or in another tab): redraw the cards
+addEventListener('storage',e=>{if(S&&(e.key==null||APPS.some(a=>e.key==a.key||e.key==a.key+':cloud')))R()});
+
+// =====================================================================
+// 9. RENDER & NAVIGATION
+// =====================================================================
+const ICON={home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ apps:'<rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/>'};
+const TABS=[['home','Home',vHome],['apps','Apps',vApps]];
+const SETTINGS=['more','Settings',vMore];
+
+// ---- Minimal DOM diff: update only what changed, so typing focus, open sections and scroll stay put ----
+function morphNode(a,b){
+ if(a.nodeType!==b.nodeType||a.nodeName!==b.nodeName){a.replaceWith(b);return}
+ if(a.nodeType!==1){if(a.nodeValue!==b.nodeValue)a.nodeValue=b.nodeValue;return}
+ for(const at of [...a.attributes])if(!b.hasAttribute(at.name))a.removeAttribute(at.name);
+ for(const at of b.attributes)if(a.getAttribute(at.name)!==at.value)a.setAttribute(at.name,at.value);
+ const tag=a.nodeName,act=a===document.activeElement;
+ if(tag=='TEXTAREA'){if(!act&&a.value!==b.value)a.value=b.value;return}
+ morphKids(a,b);
+ if(tag=='INPUT'){if(a.type=='checkbox')a.checked=b.hasAttribute('checked');else if(a.type!='file'&&!act){const v=b.getAttribute('value')??'';if(a.value!==v)a.value=v}}
+ else if(tag=='SELECT'){const i=Math.max(0,[...b.options].findIndex(o=>o.hasAttribute('selected')));if(a.selectedIndex!==i)a.selectedIndex=i}
+ else if(tag=='DETAILS')a.open=b.hasAttribute('open')}
+function morphKids(a,b){const A=[...a.childNodes],B=[...b.childNodes];
+ B.forEach((n,i)=>i<A.length?morphNode(A[i],n):a.appendChild(n));for(let i=B.length;i<A.length;i++)A[i].remove()}
+function patch(el,html,full){if(full){el.innerHTML=html;return}const t=document.createElement('template');t.innerHTML=html;morphKids(el,t.content)}
+
+const DARK=matchMedia('(prefers-color-scheme: dark)');DARK.addEventListener?.('change',()=>S.set.theme=='system'&&R());
+// Day/Night theme: dark from 6pm to 6am, light the rest of the day. A timer flips it on the hour while the app is open.
+const isNight=()=>{const h=new Date().getHours();return h>=18||h<6};
+const themeOf=th=>th=='system'?(DARK.matches?'dark':'light'):th=='daynight'?(isNight()?'dark':'light'):th;
+let DNT=0;function dnTimer(){clearTimeout(DNT);if(S.set.theme!='daynight')return;const n=new Date(),t=new Date(n),h=n.getHours();t.setHours(h<6?6:h<18?18:30,0,1,0);DNT=setTimeout(R,t-n)}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S){R();fetchCloud()}});   // timers pause while the phone sleeps
+let RK='';
+function R(){const de=document.documentElement;de.dataset.theme=themeOf(S.set.theme||'system');dnTimer();
+ const c=TC[T]||TC.home;de.style.setProperty('--pc',c[0]);de.style.setProperty('--pc2',c[1]);
+ const key=T,full=key!==RK;RK=key;
+ patch(APP(),(T=='more'?SETTINGS:TABS.find(t=>t[0]==T))[2](),full);
+ document.getElementById('gear').classList.toggle('on',T=='more');
+ patch(document.getElementById('nav'),`<i class="hl" aria-hidden="true"></i>${TABS.map(t=>`<button class="${T==t[0]?'on':''}"${T==t[0]?' aria-current="page"':''} style="--tc:${TC[t[0]][0]}" data-a="tab" data-id="${t[0]}"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[t[0]]}</svg><span>${t[1]}</span></button>`).join('')}`);
+ placeHL(T);navSync()}
+// ---- Nav highlight: a pill behind the active tab's icon that glides between tabs ----
+function hlBox(id){const nav=document.getElementById('nav'),b=nav.querySelector(`button[data-id="${id}"]`);if(!b)return null;const n=nav.getBoundingClientRect(),br=b.getBoundingClientRect(),ic=b.querySelector('.ni'),r=ic?ic.getBoundingClientRect():br;
+ const w=Math.min(48,br.width-4),h=30,cx=r.left+r.width/2-n.left,cy=r.top+r.height/2-n.top;return {x:cx-w/2,y:cy-h/2,w,h,c:TC[id][0]}}
+function placeHL(a,b,p=0){const nav=document.getElementById('nav'),A=hlBox(a);if(!A){nav.style.setProperty('--ho','0');return}
+ const B=b&&hlBox(b)||A,L=(u,v)=>u+(v-u)*p,s=nav.style;
+ s.setProperty('--hx',L(A.x,B.x).toFixed(1)+'px');s.setProperty('--hy',L(A.y,B.y).toFixed(1)+'px');s.setProperty('--hw',L(A.w,B.w).toFixed(1)+'px');s.setProperty('--hh',L(A.h,B.h).toFixed(1)+'px');s.setProperty('--ho','1');
+ s.setProperty('--hc',p>0&&B.c!=A.c?`color-mix(in srgb,${B.c} ${Math.round(p*100)}%,${A.c})`:(p>=1?B.c:A.c))}
+addEventListener('resize',()=>{if(S)placeHL(T)});
+const APP=()=>document.getElementById('app'),EZ_IN='cubic-bezier(.16,1,.3,1)',EZ_BACK='cubic-bezier(.34,1.56,.64,1)';
+function slideIn(dir){const m=APP(),w=innerWidth;m.style.willChange='transform,opacity';m.style.transition='none';m.style.transform=`translate3d(${dir*Math.min(80,w*.15)}px,0,0)`;m.style.opacity='0';void m.offsetWidth;
+ m.style.transition=`transform .22s ${EZ_IN},opacity .16s ease-out`;m.style.transform='translate3d(0,0,0)';m.style.opacity='1';
+ setTimeout(()=>{m.style.transition='';m.style.transform='';m.style.opacity='';m.style.willChange=''},240)}
+// Levels below Home: any other tab (or Settings) 1; an open app adds one, and so does a popup.
+function navDepth(){return (T=='home'?0:1)+(VW?1:0)+(DLG?1:0)}
+function navUp(){if(DLG)return closeDlg();if(VW)return closeApp();if(T!='home')goTab('home')}
+// ---- Phone back button (the same block as the other Big apps) ----
+// Every open layer (a popup, an editor, a sub-view, any tab but the first) has one browser-history entry,
+// so Back closes the top layer and only leaves the app from the first tab with nothing open.
+// An app open in the viewer adds its own entries inside its frame; Back steps through those first.
+let HD=0,HPOP=0;   // history entries the app has added; set while the app removes its own entries
+function navSync(){if(HPOP)return;const d=navDepth();
+ if(d>HD){const ua=navigator.userActivation;if(ua&&!ua.isActive)return;   // entries added without a tap get skipped by Back, so wait for one
+  try{while(HD<d){history.pushState({nav:HD+1},'');HD++}}catch(_){}}
+ else if(d<HD){const n=HD-d;HD=d;HPOP=1;try{history.go(-n)}catch(_){HPOP=0}}}
+addEventListener('popstate',e=>{if(HPOP){HPOP=0;navSync();return}
+ const to=Math.max(0,(e.state&&e.state.nav)||0);if(to>HD){HD=to;navSync();return}   // Forward: undo it
+ let n=HD-to;HD=to;while(n-->0&&navDepth()>0)navUp();navSync()});
+['pointerup','touchend','keydown'].forEach(t=>addEventListener(t,()=>setTimeout(navSync),true));
+function goTab(id){if(id==T){scrollTo({top:0,behavior:'smooth'});return}const o=TABS.map(t=>t[0]),dir=o.indexOf(id)>o.indexOf(T)?1:-1;T=id;R();scrollTo(0,0);slideIn(T=='more'?1:dir)}
+
+// =====================================================================
+// 10. GESTURES
+// =====================================================================
+// ---- Swipe between tabs: the page and its neighbour move together under your finger ----
+function nbr(dir){if(T=='more')return null;const i=TABS.findIndex(x=>x[0]==T)+dir;return TABS[i]?TABS[i][0]:null}
+function mkPeek(id){let p=document.getElementById('peek');
+ if(!p){p=document.createElement('div');p.id='peek';p.setAttribute('aria-hidden','true');p.inert=true;document.body.appendChild(p)}
+ if(p.dataset.id==id)return p;const t=TABS.find(x=>x[0]==id),c=TC[id];
+ p.dataset.id=id;p.style.top=document.querySelector('header.top').getBoundingClientRect().bottom+'px';
+ p.style.setProperty('--pc',c[0]);p.style.setProperty('--pc2',c[1]);p.innerHTML=`<div class="view">${t[2]()}</div>`;return p}
+const rmPeek=()=>{const p=document.getElementById('peek');if(p)p.remove()};
+(function(){let sx=0,sy=0,lx=0,lt=0,vx=0,ax=null,ok=false,busy=false;const W=()=>innerWidth,nav=()=>document.getElementById('nav');
+ const mv=(el,x,tr)=>{el.style.transition=tr||'none';el.style.transform=`translate3d(${x}px,0,0)`};
+ document.addEventListener('touchstart',e=>{const t=e.target;ok=!busy&&!DLG&&!VW&&T!='more'&&e.touches.length==1&&!t.closest('input,select,textarea,nav,header,.dh,#vw');ax=null;if(!ok)return;sx=lx=e.touches[0].clientX;sy=e.touches[0].clientY;lt=performance.now();vx=0},{passive:true});
+ document.addEventListener('touchmove',e=>{if(!ok)return;const x=e.touches[0].clientX,y=e.touches[0].clientY,dx=x-sx,dy=y-sy;
+  if(ax==null){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;ax=Math.abs(dx)>Math.abs(dy)*1.2?'x':'y';if(ax=='x'){APP().style.willChange='transform';nav().classList.add('drag')}}
+  if(ax!='x')return;e.preventDefault();const now=performance.now();vx=.7*vx+.3*((x-lx)/Math.max(1,now-lt));lx=x;lt=now;
+  const dir=dx<0?1:-1,to=nbr(dir),w=W(),m=APP();
+  if(!to){rmPeek();mv(m,dx/(1+Math.abs(dx)/90));placeHL(T);return}   // nothing that way: rubber-band
+  mv(m,dx);mv(mkPeek(to),dir*w+dx);placeHL(T,to,Math.min(1,Math.abs(dx)/w))},{passive:false});
+ const end=e=>{if(!ok||ax!='x')return;ok=false;nav().classList.remove('drag');
+  const m=APP(),dx=(e.changedTouches[0]||{clientX:lx}).clientX-sx,dir=dx<0?1:-1,to=nbr(dir),w=W(),p=document.getElementById('peek');
+  const commit=to&&p&&(Math.abs(dx)>w*.28||(Math.abs(vx)>.35&&Math.abs(dx)>24&&Math.sign(vx)==Math.sign(dx)));
+  const done=()=>{m.style.transition='';m.style.transform='';m.style.willChange=''};
+  if(!commit){mv(m,0,`transform .32s ${EZ_BACK}`);if(p)mv(p,dir*w,`transform .3s ${EZ_IN}`);placeHL(T);setTimeout(()=>{done();rmPeek()},330);return}
+  busy=true;const rem=w-Math.abs(dx),dur=Math.round(Math.max(170,Math.min(300,rem/Math.max(1.2,Math.abs(vx)*1.4)))),tr=`transform ${dur}ms cubic-bezier(.2,.8,.2,1)`;
+  mv(m,-dir*w,tr);mv(p,0,tr);placeHL(to);window.Feedback&&Feedback.hap('tick');
+  setTimeout(()=>{m.style.transition='none';m.style.transform='';T=to;R();scrollTo(0,0);m.style.willChange='';requestAnimationFrame(()=>{rmPeek();m.style.transition='';busy=false})},dur)};
+ document.addEventListener('touchend',end,{passive:true});document.addEventListener('touchcancel',end,{passive:true});
+})();
+// ---- Drag to reorder (handle on each row with data-dl = list path, data-di = index) ----
+(function(){let D=null;
+ const sibs=d=>[...d.par.children].filter(x=>x.dataset.dl==d.key);
+ const flip=(els,fn)=>{const t=new Map(els.map(e=>[e,e.getBoundingClientRect().top]));fn();els.forEach(e=>{const dy=t.get(e)-e.getBoundingClientRect().top;if(!dy)return;e.style.transition='none';e.style.transform=`translateY(${dy}px)`;void e.offsetWidth;e.style.transition='transform .2s cubic-bezier(.2,.8,.2,1)';e.style.transform=''})};
+ document.addEventListener('pointerdown',e=>{const h=e.target.closest('.dh');if(!h)return;const row=h.closest('[data-dl]');if(!row)return;e.preventDefault();
+  D={row,key:row.dataset.dl,par:row.parentElement,y0:e.clientY,id:e.pointerId,sy:scrollY};h.setPointerCapture(e.pointerId);row.classList.add('dragging');document.body.classList.add('dragmode');window.Feedback&&Feedback.hap('tick')});
+ document.addEventListener('pointermove',e=>{if(!D||e.pointerId!=D.id)return;e.preventDefault();
+  const r=D.row,dy=e.clientY-D.y0+(scrollY-D.sy);r.style.transform=`translateY(${dy}px)`;
+  const ss=sibs(D).filter(x=>x!=r),y=e.clientY;let moved=false;
+  for(const o of ss){const b=o.getBoundingClientRect(),mid=b.top+b.height/2,before=r.compareDocumentPosition(o)&Node.DOCUMENT_POSITION_PRECEDING;
+   if(before&&y<mid){const t0=r.getBoundingClientRect().top-dy;flip(ss,()=>D.par.insertBefore(r,o));const t1=r.getBoundingClientRect().top-dy;D.y0+=t1-t0;moved=true;break}
+   if(!before&&y>mid){const t0=r.getBoundingClientRect().top-dy;flip(ss,()=>D.par.insertBefore(r,o.nextSibling));const t1=r.getBoundingClientRect().top-dy;D.y0+=t1-t0;moved=true}}
+  if(moved)r.style.transform=`translateY(${e.clientY-D.y0+(scrollY-D.sy)}px)`;
+  if(y<70)scrollBy(0,-8);else if(y>innerHeight-110)scrollBy(0,8)},{passive:false});
+ const drop=e=>{if(!D||e.pointerId!=D.id)return;const d=D;D=null;const r=d.row;r.style.transition='transform .18s ease-out';r.style.transform='';
+  document.body.classList.remove('dragmode');const order=sibs(d).map(x=>+x.dataset.di);
+  setTimeout(()=>{r.classList.remove('dragging');r.style.transition='';const a=get(d.key),pos=[...order].sort((x,y)=>x-y);if(order.some((v,k)=>v!=pos[k])){const its=order.map(i=>a[i]);pos.forEach((p,k)=>a[p]=its[k]);save()}R()},180)};
+ document.addEventListener('pointerup',drop);document.addEventListener('pointercancel',drop);
+})();
+
+// =====================================================================
+// 11. START
+// =====================================================================
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+load();
+R();
+// Sync across devices (sync.js). Signing in here also lets Home read what each app last synced.
+window.CloudSync&&CloudSync.init({app:'suite',name:'Big Juicy',key:LS,what:'your suite',version:()=>MIGRATIONS.length,btn:'',btn2:'g bd',
+ card:b=>`<div class="card"><h2>Sync across devices</h2>${b}<p class="mu" style="margin:10px 0 0">While you’re signed in, Home also shows what each app last synced, so it can see apps you use on their own (on iPhone, each home-screen app keeps its own storage). Sign in with the same account in each app.</p></div>`,
+ onUser:on=>{if(on)fetchCloud(true);else{CLOUD={};R()}},
+ apply:obj=>{if(!VALID(obj))throw 0;S=obj;migrate();save();flush();R()},render:()=>R()});
+</script></body></html>
