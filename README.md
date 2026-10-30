@@ -9,7 +9,7 @@ All six Big apps in one place, with a look at each one from Home. It holds [Big 
   - **Big Saucy:** meals planned for today, and kitchen items to use up soon
   - **Big Skinny:** calories left (or over) today against your daily target
   - **Big Tidy:** the reminders showing now
-  - **Big Shiny:** tasks due at the property you're on, plus low supplies and tours today, or just "Done for the day" or "Day off" once you've clocked out
+  - **Big Shiny:** tasks due at the property you're on, the supplies running low by name, and tours today. Once you've clocked out it just says "Done for the day" or "Day off", still listing any low supplies
   - **Big Healthy:** medication doses taken today, what's next, and water
 - A dot marks apps that need a look today (reminders waiting, cleaning or a dose due, food to use up, a paycheck over budget), and the banner on Home counts them
 - Tap a card, or an app on the Apps tab, to open that app full screen inside the suite. **Suite** at the top (or your phone's Back button) takes you back, and the cards update with anything you changed.
