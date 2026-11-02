@@ -276,7 +276,7 @@ const SNAP={
   if(low.length)l.push(['Use it up',low.slice(0,3).map(p=>p.name).join(', ')+(low.length>3?' +'+(low.length-3):'')]);
   return {h:meals.length?plural(meals.length,'meal')+' planned today':'Nothing planned today',s:plural(R.length,'recipe'),l,hot:low.length>0}},
  // Big Skinny: calories left today against your daily target
- diet(D){const t=tdy(),p=D.prof||{},day=(D.days||{})[t]||{},food=sum(['b','l','d','s'],k=>sum(day[k]||[],x=>num(x.cal))),bn=sum(day.x||[],x=>num(x.cal)),tt=dietTarget(p);
+ diet(D){const t=tdy(),p=D.prof||{},day=(D.days||{})[t]||{},food=sum(['b','l','d','s'],k=>sum(day[k]||[],x=>num(x.cal))),bn=sum(day.x||[],x=>num(x.cal)),tt=dietTarget(p,day.act);
   if(!tt&&!food)return null;
   if(!tt)return {h:fmt(food)+' cal eaten',s:'No daily target yet',l:[],hot:false};
   const left=tt+bn-food;return {h:fmt(Math.abs(left))+(left>=0?' cal left':' cal over'),s:'Today',l:[['Eaten',fmt(food)],['Exercise','+'+fmt(bn)],['Target',fmt(tt)]],hot:false}},
@@ -300,9 +300,11 @@ const SNAP={
   return {h:ds.length?dn+' of '+ds.length+' doses taken':w+' of '+goal+' glasses',s:ds.length?'Today':'Water today',l:ds.length?l:l.slice(1),hot:todo.some(x=>x.due)}},
 };
 // Big Skinny's daily target (the same sum the app does): Mifflin-St Jeor resting burn x activity, less 500 cal a day
-// per pound a week when losing, never under 1,200 (women) or 1,500 (men)
-function dietTarget(p){if(!(num(p.age)>0&&num(p.ft)>0&&num(p.lbs)>0&&num(p.goal)>0))return 0;const r10=n=>Math.round(n/10)*10;
- const kg=num(p.lbs)*.45359237,cm=(num(p.ft)*12+num(p.inch))*2.54,tdee=(10*kg+6.25*cm-5*num(p.age)+(p.sex=='m'?5:-161))*num(p.act||1.2),fl=p.sex=='m'?1500:1200;
+// per pound a week when losing, never under 1,200 (women) or 1,500 (men). Age comes from the birth month (born:'YYYY-MM',
+// older data has a plain age); act is the day's own activity level from Today, falling back to the usual one.
+function dietTarget(p,act){const m=/^(\d{4})-(\d\d)$/.exec(p.born||''),n=new Date(),age=m?n.getFullYear()-+m[1]-(n.getMonth()+1<+m[2]?1:0):num(p.age);
+ if(!(age>0&&num(p.ft)>0&&num(p.lbs)>0&&num(p.goal)>0))return 0;const r10=n=>Math.round(n/10)*10;
+ const kg=num(p.lbs)*.45359237,cm=(num(p.ft)*12+num(p.inch))*2.54,tdee=(10*kg+6.25*cm-5*age+(p.sex=='m'?5:-161))*num(act||p.act||1.2),fl=p.sex=='m'?1500:1200;
  if(num(p.lbs)-num(p.goal)<=.5||tdee<=fl)return r10(tdee);return r10(Math.max(tdee-num(p.pace)*500,fl))}
 // Big Shiny's progress (the same rules the app uses): each task is due again a day, week or month after it was last done;
 // as-needed tasks never count; an area marked clean today stops whatever was still due in it
