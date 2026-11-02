@@ -288,8 +288,9 @@ const SNAP={
   const low=(P.sup||[]).filter(s=>s.low!=null&&s.q!=null&&s.q<=s.low),lowL=low.length?[['Low supplies',low.slice(0,3).map(s=>s.n||'Untitled').join(', ')+(low.length>3?' +'+(low.length-3):'')]]:[];
   // Clocked out or a day off (Big Shiny migration v9): just say so, but still list what needs restocking
   const o=D.off&&D.off.d==tdy()?D.off:null;if(o)return {h:o.k=='day'?'Day off':'Done for the day',s:'',l:lowL,hot:low.length>0};
-  const g=shinyProg(D,P),tours=(P.tours||[]).filter(x=>x.d==tdy()).length;
-  const l=[['Done today',String(g.done)],...lowL];if(tours)l.push(['Tours today',String(tours)]);
+  // Big Shiny v13: each entry is a tour or a move-in (x.k 'move'); older saves without k are tours
+  const g=shinyProg(D,P),tt=(P.tours||[]).filter(x=>x.d==tdy()),mv=tt.filter(x=>x.k=='move').length,tours=tt.length-mv;
+  const l=[['Done today',String(g.done)],...lowL];if(tours)l.push(['Tours today',String(tours)]);if(mv)l.push(['Move-ins today',String(mv)]);
   return {h:g.due?plural(g.due,'task')+' due':'All caught up',s:P.n||'Untitled property',l,hot:g.due>0||low.length>0}},
  // Big Healthy: today's medication doses and water
  habits(D){const t=tdy(),tk=(D.taken||{})[t]||{},n=new Date(),hm=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
