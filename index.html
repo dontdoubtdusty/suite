@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- NOTE FOR US (not part of the app): this app was created Oct 29, 2026. Six months from then, Apr 29, 2027, is our first benchmark: sit down together and look at how it's actually been used and what to change. Check-in at 3 months: Jan 29, 2027. -->
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone and iPad zoom the page in when you tap a box whose text is under 16px, and stay zoomed. maximum-scale stops that; iOS still lets you pinch to zoom. Other phones are left alone, since there it would block pinch zoom. */if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform=='MacIntel'&&navigator.maxTouchPoints>1))document.querySelector('meta[name=viewport]').content+=', maximum-scale=1'</script>
@@ -27,23 +28,23 @@ main{max-width:1100px;margin:0 auto;padding:12px}
 /* Clips the page while it slides sideways, so it can never widen the viewport (which made the fixed nav twitch on iOS) */
 .vclip{overflow:hidden;width:100%}
 .view{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;align-items:start;touch-action:pan-y}
-.view>.seg,.view>h2,.view>button,.view>p,.view>.tiles,.view>.wide,.view>.warn,.view>.pcb{grid-column:1/-1}
+.view>.seg,.view>h2,.view>button,.view>p,.view>.wide,.view>.pcb{grid-column:1/-1}
 .view>h2{margin:8px 2px 0}
 h2,h3{margin:0 0 10px;font-family:var(--fd);font-weight:600}h2{font-size:20px;letter-spacing:-.2px}h3{font-size:16px;display:flex;justify-content:space-between;gap:8px;align-items:center}
 summary{cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}
-.mu{color:var(--mu);font-size:13px}.neg{color:var(--neg)}.pos{color:var(--ac)}
+.mu{color:var(--mu);font-size:13px}.pos{color:var(--ac)}
 .sec{display:block;font-size:12px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--mu);margin:2px 0 6px}
 .ic{display:inline-block;vertical-align:-2px}
 
 /* ===== Cards & rows ===== */
-.card,.tile{border-radius:22px;box-shadow:var(--sh)}
+.card{border-radius:22px;box-shadow:var(--sh)}
 .card{background:var(--card);border:1px solid var(--bd);padding:16px}
 .view>.card{background-image:linear-gradient(90deg,var(--pc),var(--pc2));background-size:100% 5px;background-repeat:no-repeat;background-origin:border-box;padding-top:19px}.card h2{color:var(--pc)}
 .row{display:flex;gap:8px;align-items:center;margin:2px 0;min-height:38px}.row>*{min-width:0}.row>.mu{flex:none}
 .ln{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0}.ln span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ln b{font-weight:600;white-space:nowrap}
 .tag{flex:none;font-size:10px;font-weight:800;letter-spacing:.4px;color:var(--pc);background:color-mix(in srgb,var(--pc) 13%,transparent);border-radius:99px;padding:3px 8px;text-transform:uppercase}
-.bar{height:8px;background:var(--fld);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pc),var(--pc2));transition:width .35s cubic-bezier(.2,.8,.2,1)}
-.warn{border-color:var(--wn);background:color-mix(in srgb,var(--wn) 10%,var(--card))}.warn h3{color:var(--wn)}.warn .row button{padding:5px 10px;font-size:13px}
+
+
 
 /* ===== Inputs & buttons ===== */
 input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],textarea,select{width:100%;padding:9px 10px;border:1px solid transparent;border-radius:12px;background:var(--fld);color:var(--tx);font:inherit;transition:border-color var(--fast),background var(--fast)}
@@ -55,7 +56,7 @@ input[type=checkbox]::after{content:"";width:6px;height:11px;margin-top:-3px;bor
 input[type=checkbox]:checked{background:linear-gradient(135deg,var(--pc),var(--pc2));border-color:transparent}input[type=checkbox]:checked::after{transform:rotate(45deg) scale(1)}
 input[type=checkbox].pop{animation:pop .3s cubic-bezier(.34,1.56,.64,1)}@keyframes pop{40%{transform:scale(1.22)}}
 button{background:linear-gradient(135deg,var(--pc),var(--pc2));color:#fff;border:0;border-radius:14px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pc) 70%,transparent);transition:transform .25s var(--bounce),filter .1s,background var(--fast)}
-button.g,button.x,nav button,.seg button,.gear,#toast button,.warn .row button{box-shadow:none}
+button.g,button.x,nav button,.seg button,.gear,#toast button{box-shadow:none}
 button:is(:active,.prs){transform:scale(.93);filter:brightness(.95);transition-duration:.08s}
 button:disabled{opacity:.4}
 button.g{background:none;color:var(--mu);padding:8px 10px;font-weight:600}button.x{background:none;color:var(--neg);padding:8px 8px;font-weight:600}
@@ -255,9 +256,9 @@ function dataOf(a){const L=localOf(a),C=CLOUD[a.id];
  return L?{d:L.d,cloud:false,at:L.at}:null}
 const unzip=async r=>r.gz?new Response(new Blob([r.gz.toUint8Array()]).stream().pipeThrough(new DecompressionStream('gzip'))).text():r.json;
 // Fetch every app's synced copy (at most once a minute unless forced)
-async function fetchCloud(force){if(!window.CloudSync||!CloudSync.signedIn()||CLBUSY)return;if(!force&&Date.now()-CLT<60e3)return;CLBUSY=1;CLT=Date.now();
- await Promise.all(APPS.map(async a=>{try{const r=await CloudSync.mine.get('apps/'+a.id);if(!r){delete CLOUD[a.id];return}CLOUD[a.id]={at:num(r.at),d:JSON.parse(await unzip(r))}}catch(e){}}));
- CLBUSY=0;R()}
+async function fetchCloud(force){if(!window.CloudSync||!CloudSync.signedIn()||CLBUSY)return;if(!force&&Date.now()-CLT<60e3)return;CLBUSY=1;CLT=Date.now();let ch=0;
+ await Promise.all(APPS.map(async a=>{try{const r=await CloudSync.mine.get('apps/'+a.id);if(!r){if(CLOUD[a.id]){delete CLOUD[a.id];ch=1}return}if(CLOUD[a.id]&&CLOUD[a.id].at===num(r.at))return;CLOUD[a.id]={at:num(r.at),d:JSON.parse(await unzip(r))};ch=1}catch(e){}}));
+ CLBUSY=0;if(ch||force)R()}
 
 // ---- What each app's card says. Each reads that app's saved data the way the app itself does. ----
 // Returns {h: headline, s: line under it, l: [[label, value]], hot: needs a look today} or null when there's nothing yet.
