@@ -11,6 +11,7 @@ All six Big apps in one place, with a look at each one from Home. It holds [Big 
   - **Big Tidy:** the reminders showing now
   - **Big Shiny:** tasks due at the property you're on, the supplies running low by name, and tours and move-ins today. Once you've clocked out it just says "Done for the day" or "Day off", still listing any low supplies
   - **Big Healthy:** medication doses taken today, what's next, and water
+- **Done for today** at the foot of each card folds it down to a green check, so Home can reach "All done for today". Big Shiny counts as done once you clock out or take the day off, and Big Tidy once no reminder is showing (ones coming back on a later day don't count). Marks you make yourself have Undo and reset the next day.
 - A dot marks apps that need a look today (reminders waiting, cleaning or a dose due, food to use up, a paycheck over budget), and the banner on Home counts them
 - Each time the suite loads, it checks every app's version number and shows a notice at the top of Home and Apps when one has changed since you last dismissed it. The first load only records the current versions.
 - Tap a card, or an app on the Apps tab, to open that app full screen inside the suite. **Suite** at the top (or your phone's Back button) takes you back, and the cards update with anything you changed.
